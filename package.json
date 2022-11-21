@@ -1,0 +1,89 @@
+{
+  "name": "al-qasr-glass-industerial-server",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "nest build",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json"
+  },
+  "dependencies": {
+    "@nestjs/axios": "^0.1.0",
+    "@nestjs/common": "^9.1.4",
+    "@nestjs/config": "^2.2.0",
+    "@nestjs/core": "^9.1.4",
+    "@nestjs/jwt": "^9.0.0",
+    "@nestjs/mapped-types": "*",
+    "@nestjs/passport": "^9.0.0",
+    "@nestjs/platform-express": "^9.1.4",
+    "@nestjs/platform-socket.io": "^9.1.4",
+    "@nestjs/typeorm": "^9.0.1",
+    "@nestjs/websockets": "^9.1.4",
+    "axios": "^1.1.3",
+    "class-validator": "^0.13.2",
+    "mssql": "^9.0.1",
+    "nestjs-paginate": "^4.3.0",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
+    "rxjs": "^7.5.7",
+    "typeorm": "^0.3.10"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^9.1.4",
+    "@nestjs/schematics": "^9.0.3",
+    "@nestjs/testing": "^9.1.4",
+    "@types/express": "^4.17.14",
+    "@types/jest": "29.1.2",
+    "@types/node": "^18.8.4",
+    "@types/passport-jwt": "^3.0.7",
+    "@types/passport-local": "^1.0.34",
+    "@types/supertest": "^2.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "jest": "29.1.2",
+    "prettier": "^2.7.1",
+    "source-map-support": "^0.5.21",
+    "supertest": "^6.3.0",
+    "ts-jest": "29.0.3",
+    "ts-loader": "^9.4.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "4.1.0",
+    "typescript": "^4.8.4"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  }
+}
