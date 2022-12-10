@@ -7,6 +7,7 @@ import { DeliveryOrderModule } from './delivery_order/delivery_order.module';
 import { SmsModule } from './sms/sms.module';
 import { ConfigModule } from '@nestjs/config';
 import { VersionModule } from './version/version.module';
+import { DesktopUtilsModule } from './desktop-utils/desktop-utils.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { VersionModule } from './version/version.module';
     DeliveryOrderModule,
     SmsModule,
     VersionModule,
+    DesktopUtilsModule,
   ],
   controllers: [AuthController],
   providers: [],
