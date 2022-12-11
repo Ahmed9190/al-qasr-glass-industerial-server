@@ -26,7 +26,6 @@ export class DeliveryOrderController {
     @Paginate() query: PaginateQuery,
     @Req() request: any,
   ): Promise<Paginated<DeliveryOrder>> {
-    console.log(query);
     return this.deliveryOrderService.findAllPaginated(
       query,
       request.user.driverNumber,
