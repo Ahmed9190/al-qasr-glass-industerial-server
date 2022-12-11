@@ -13,6 +13,9 @@ export class DeliveryOrder {
   @Column({ name: 'invdate', type: 'date' })
   date: Date;
 
+  @Column({ name: 'CarOutDate', type: 'datetime' })
+  carLeavingAppointment: Date;
+
   @Column({ name: 'SOinvno', type: 'int' })
   sellOrder: number;
 

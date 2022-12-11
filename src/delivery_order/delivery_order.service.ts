@@ -43,7 +43,7 @@ export class DeliveryOrderService {
       filterableColumns: {
         seen: [FilterOperator.EQ],
         delivered: [FilterOperator.EQ],
-        date: [FilterOperator.BTW],
+        carLeavingAppointment: [FilterOperator.BTW],
       },
       relations: ['car'],
     });

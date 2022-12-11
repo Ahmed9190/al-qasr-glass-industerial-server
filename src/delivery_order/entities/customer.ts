@@ -5,5 +5,5 @@ export class Customer {
   name: string;
 
   @Column({ name: 'Location' })
-  location: string;
+  location?: string;
 }
