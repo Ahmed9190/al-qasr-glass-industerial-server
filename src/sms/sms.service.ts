@@ -20,7 +20,7 @@ interface ISmsApiResponse {
 export class SmsService {
   constructor(private readonly httpService: HttpService) {}
 
-  public async send(smsData: SMSData): Promise<any> {
+  public async send(smsData: SMSData): Promise<boolean> {
     const smsApiQueryParameters = buildSmsApiQueryParameters(smsData);
 
     const { data } = await this.httpService.axiosRef.get<ISmsApiResponse>(

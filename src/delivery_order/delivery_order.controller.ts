@@ -48,12 +48,12 @@ export class DeliveryOrderController {
   @UseGuards(AuthGuard('jwt'))
   @Patch('mark-as-delivered/:deliveryOrderNumber')
   @HttpCode(HttpStatus.ACCEPTED)
-  public markAsDelivered(
+  async markAsDelivered(
     @Param('deliveryOrderNumber', ParseIntPipe) deliveryOrderNumber: number,
     @Req() request: any,
     @Body() markAsDeliveredDto: MarkAsDeliveredDto,
   ) {
-    return this.deliveryOrderService.markAsDelivered(
+    return await this.deliveryOrderService.markAsDelivered(
       deliveryOrderNumber,
       markAsDeliveredDto,
       request.user.driverNumber,
@@ -66,7 +66,7 @@ export class DeliveryOrderController {
   }
 
   @Post('send-verification-code-sms')
-  public sendVerificationCodeSms(@Body() sendDataDto: SendDataDto) {
-    return this.deliveryOrderService.sendVerificationCodeSms(sendDataDto);
+  async sendVerificationCodeSms(@Body() sendDataDto: SendDataDto) {
+    return await this.deliveryOrderService.sendVerificationCodeSms(sendDataDto);
   }
 }

@@ -102,10 +102,12 @@ export class DeliveryOrderService {
         deliveryOrder.driverNumber,
         deliveryOrder,
       );
+
+      return true;
     }
   }
 
-  async sendVerificationCodeSms(sendDataDto: SendDataDto) {
+  async sendVerificationCodeSms(sendDataDto: SendDataDto): Promise<boolean> {
     const { mobileNumber, deliveryOrderNumber } = sendDataDto;
 
     const verificationCode: number =
