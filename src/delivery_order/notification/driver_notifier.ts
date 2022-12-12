@@ -16,21 +16,20 @@ export class DriversNotifier implements DriversNotifier {
   }
 
   removeObserver(driverToBeRemoved: DriverObserver): void {
-    const driverToBeRemovedIndex = this.drivers.findIndex(
-      (driver) => driver.number === driverToBeRemoved.number,
+    const driversWithoutRemoved = this.drivers.filter(
+      (driver) => driver.number !== driverToBeRemoved.number,
     );
 
-    this.drivers.splice(driverToBeRemovedIndex, 1);
+    this.drivers = driversWithoutRemoved;
   }
 
   notifyObserver(driverNumber: number, data: Object): void {
-    const driver: DriverObserver | undefined = this.drivers.find(
+    const drivers: DriverObserver[] = this.drivers.filter(
       (driver) => driver.number === driverNumber,
     );
-
-    if (driver) {
-      driver.sendNotification('server:delivery_order_created', data);
-    }
+    drivers.forEach((driver) =>
+      driver.sendNotification('server:delivery_order_created', data),
+    );
   }
 }
 

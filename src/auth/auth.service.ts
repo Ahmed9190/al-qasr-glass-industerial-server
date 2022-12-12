@@ -40,8 +40,8 @@ export class AuthService {
       driverNumber: userWithoutPassword.driverNumber,
     };
 
-    return {
-      token: this.jwtService.sign(payload),
-    };
+    const token = this.jwtService.sign(payload);
+
+    return { token };
   }
 }
