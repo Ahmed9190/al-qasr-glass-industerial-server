@@ -112,7 +112,7 @@ export class DeliveryOrderService {
       await this.findVerificationCodeByDeliveryOrderNumber(deliveryOrderNumber);
 
     if (regEx.saudiaArabiaMobile.test(mobileNumber))
-      await this.smsService.send({
+      return await this.smsService.send({
         message: `أمر التسليم رقم ${deliveryOrderNumber}
 رقم التحقق الخاص به هو ${verificationCode}`,
         mobile: mobileNumber,

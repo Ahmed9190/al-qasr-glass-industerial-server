@@ -3,6 +3,19 @@ import { Injectable } from '@nestjs/common';
 import { SMSData } from './interfaces/sms.interface';
 import { buildSmsApiQueryParameters, smsApiUrl } from './sms.constants';
 
+enum ISmsApiResponseStatus {
+  failed = 'F',
+  success = 'S',
+}
+
+interface ISmsApiResponse {
+  message_id: number;
+  status: ISmsApiResponseStatus;
+  remarks: string;
+  uid: any;
+  phonenumber: string;
+}
+
 @Injectable()
 export class SmsService {
   constructor(private readonly httpService: HttpService) {}
@@ -10,10 +23,13 @@ export class SmsService {
   public async send(smsData: SMSData): Promise<any> {
     const smsApiQueryParameters = buildSmsApiQueryParameters(smsData);
 
-    const { data } = await this.httpService.axiosRef.get(smsApiUrl, {
-      params: smsApiQueryParameters,
-    });
+    const { data } = await this.httpService.axiosRef.get<ISmsApiResponse>(
+      smsApiUrl,
+      {
+        params: smsApiQueryParameters,
+      },
+    );
 
-    return data.Code == 200;
+    return data.status == ISmsApiResponseStatus.success;
   }
 }
