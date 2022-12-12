@@ -5,13 +5,11 @@ export const smsApiUrl = 'http://REST.GATEWAY.SA/api/SendSMS';
 export const buildSmsApiQueryParameters = (
   data: SMSData,
 ): SmsApiParameters => ({
-  api_id: 'API38746421063',
-  api_password: '*0s9UD^x13XT$@3!',
+  api_id: process.env.SMS_API_ID,
+  api_password: process.env.SMS_API_PASSWORD,
   sms_type: 'T',
   encoding: 'T',
-  sender_id: 'ALQASRGLASS',
+  sender_id: data.sender_id ?? process.env.SMS_SENDER_ID,
   phonenumber: data.mobile,
   textmessage: data.message,
 });
-
-// export const smsUrlBuilder = new UrlBuilder(smsApiUrl);
