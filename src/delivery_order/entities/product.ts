@@ -1,4 +1,4 @@
-import { Column } from 'typeorm';
+import { AfterLoad, Column } from 'typeorm';
 
 export class Product {
   @Column({ name: 'TotQty' })
@@ -6,4 +6,9 @@ export class Product {
 
   @Column({ name: 'TotArea' })
   area: number;
+
+  @AfterLoad()
+  _assureIntValues() {
+    this.quantity = parseInt(this.quantity.toString());
+  }
 }

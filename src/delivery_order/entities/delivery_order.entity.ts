@@ -1,5 +1,5 @@
 import { IsInt, Min, Max } from 'class-validator';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { AfterLoad, Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { DeliveryOrderStatus } from '../enums/delivery-order-status.enum';
 import { Car } from './car.entity';
 import { Customer } from './customer';
@@ -49,4 +49,9 @@ export class DeliveryOrder {
 
   @Column({ name: 'GatePass', enum: DeliveryOrderStatus })
   status: number;
+
+  @AfterLoad()
+  _assureIntValues() {
+    this.sellOrder = parseInt(this.sellOrder.toString());
+  }
 }
