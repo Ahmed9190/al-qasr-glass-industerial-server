@@ -13,7 +13,7 @@ export class DeliveryOrder {
   @Column({ name: 'invdate', type: 'date' })
   date: Date;
 
-  @Column({ name: 'CarOutDate', type: 'datetime' })
+  @Column({ name: 'CarOutDate', type: 'datetimeoffset' })
   carLeavingAppointment: Date;
 
   @Column({ name: 'SOinvno', type: 'int' })
@@ -44,7 +44,7 @@ export class DeliveryOrder {
   @Column({ name: 'seen', default: false })
   seen: boolean;
 
-  @Column({ name: 'CustRecDate', type: 'datetime', select: false })
+  @Column({ name: 'CustRecDate', type: 'datetimeoffset', select: false })
   deliveredAt: Date;
 
   @Column({ name: 'GatePass', enum: DeliveryOrderStatus })
