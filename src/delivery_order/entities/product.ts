@@ -1,7 +1,7 @@
 import { AfterLoad, Column } from 'typeorm';
 
 export class Product {
-  @Column({ name: 'TotQty' })
+  @Column({ name: 'TotQty', type: 'int' })
   quantity: number;
 
   @Column({ name: 'TotArea' })

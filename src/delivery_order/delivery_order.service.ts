@@ -96,14 +96,14 @@ export class DeliveryOrderService {
     });
 
     if (deliveryOrder) {
-      await this.sendVerificationCodeSms(sendDataDto);
+      const isSent = await this.sendVerificationCodeSms(sendDataDto);
 
       this.deliveryOrderGateway.driversNotifier.notifyObserver(
         deliveryOrder.driverNumber,
         deliveryOrder,
       );
 
-      return true;
+      return isSent;
     }
   }
 
@@ -113,12 +113,13 @@ export class DeliveryOrderService {
     const verificationCode: number =
       await this.findVerificationCodeByDeliveryOrderNumber(deliveryOrderNumber);
 
-    if (regEx.saudiaArabiaMobile.test(mobileNumber))
+    if (regEx.saudiaArabiaMobile.test(mobileNumber)) {
       return await this.smsService.send({
         message: `أمر التسليم رقم ${deliveryOrderNumber}
 رقم التحقق الخاص به هو ${verificationCode}`,
         mobile: mobileNumber,
       });
+    }
   }
 
   async findVerificationCodeByDeliveryOrderNumber(
