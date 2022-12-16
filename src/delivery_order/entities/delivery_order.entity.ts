@@ -1,5 +1,5 @@
 import { IsInt, Min, Max } from 'class-validator';
-import { AfterLoad, Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { DeliveryOrderStatus } from '../enums/delivery-order-status.enum';
 import { Car } from './car.entity';
 import { Customer } from './customer';
@@ -16,7 +16,14 @@ export class DeliveryOrder {
   @Column({ name: 'CarOutDate', type: 'datetimeoffset' })
   carLeavingAppointment: Date;
 
-  @Column({ name: 'SOinvno', type: 'int' })
+  @Column({
+    name: 'SOinvno',
+    type: 'int',
+    transformer: {
+      from: (sellOrder: number) => +sellOrder.toFixed(0),
+      to: (sellOrder: number) => sellOrder,
+    },
+  })
   sellOrder: number;
 
   @OneToOne(() => Car, { eager: true })
@@ -49,9 +56,4 @@ export class DeliveryOrder {
 
   @Column({ name: 'GatePass', enum: DeliveryOrderStatus })
   status: number;
-
-  @AfterLoad()
-  _assureIntValues() {
-    this.sellOrder = parseInt(this.sellOrder.toString());
-  }
 }

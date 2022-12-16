@@ -95,6 +95,11 @@ export class DeliveryOrderService {
       number: deliveryOrderNumber,
     });
 
+    await this.updateMobileNumber(
+      deliveryOrder.number,
+      sendDataDto.mobileNumber,
+    );
+
     if (deliveryOrder) {
       const isSent = await this.sendVerificationCodeSms(sendDataDto);
 
@@ -110,6 +115,11 @@ export class DeliveryOrderService {
   async sendVerificationCodeSms(sendDataDto: SendDataDto): Promise<boolean> {
     const { mobileNumber, deliveryOrderNumber } = sendDataDto;
 
+    await this.updateMobileNumber(
+      deliveryOrderNumber,
+      sendDataDto.mobileNumber,
+    );
+
     const verificationCode: number =
       await this.findVerificationCodeByDeliveryOrderNumber(deliveryOrderNumber);
 
@@ -120,6 +130,15 @@ export class DeliveryOrderService {
         mobile: mobileNumber,
       });
     }
+  }
+
+  private async updateMobileNumber(
+    deliveryOrderNumber: number,
+    mobileNumber: string,
+  ): Promise<void> {
+    await this.deliveryOrderRepository.update(deliveryOrderNumber, {
+      customer: { mobileNumber },
+    });
   }
 
   async findVerificationCodeByDeliveryOrderNumber(
