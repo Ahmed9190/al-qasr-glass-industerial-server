@@ -80,11 +80,13 @@ export class DeliveryOrderService {
 
     if (!deliveryOrder || !deliveryOrder) throw new NotAcceptableException();
 
-    const updatedDeliveryOrder = await this.deliveryOrderRepository.save({
+    const updatedDeliveryOrder = this.deliveryOrderRepository.create({
       ...deliveryOrder,
       delivered: true,
       deliveredAt: new Date(),
     });
+    await this.deliveryOrderRepository.save(updatedDeliveryOrder);
+
     return updatedDeliveryOrder;
   }
 

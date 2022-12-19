@@ -1,9 +1,17 @@
 import { IsInt, Min, Max } from 'class-validator';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
 import { DeliveryOrderStatus } from '../enums/delivery-order-status.enum';
 import { Car } from './car.entity';
 import { Customer } from './customer';
 import { Product } from './product';
+import { datetimeWithTzToSameUTC } from 'src/core/utils/datetime.utils';
 
 @Entity('DeliveryOrderH')
 export class DeliveryOrder {
@@ -13,7 +21,7 @@ export class DeliveryOrder {
   @Column({ name: 'invdate', type: 'date' })
   date: Date;
 
-  @Column({ name: 'CarOutDate', type: 'datetimeoffset' })
+  @Column({ name: 'CarOutDate', type: 'datetime' })
   carLeavingAppointment: Date;
 
   @Column({
@@ -51,9 +59,19 @@ export class DeliveryOrder {
   @Column({ name: 'seen', default: false })
   seen: boolean;
 
-  @Column({ name: 'CustRecDate', type: 'datetimeoffset', select: false })
+  @Column({
+    name: 'CustRecDate',
+    type: 'datetime',
+    select: false,
+  })
   deliveredAt: Date;
 
   @Column({ name: 'GatePass', enum: DeliveryOrderStatus })
   status: number;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  private addTimezoneOffsetForDeliveredAt(): void {
+    this.deliveredAt = datetimeWithTzToSameUTC(this.deliveredAt);
+  }
 }
