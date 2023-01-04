@@ -1,17 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Headers } from '@nestjs/common';
 import { VersionService } from './version.service';
+import Branch from 'src/core/enums/branch.enum';
 
 @Controller('version')
 export class VersionController {
   constructor(private readonly versionService: VersionService) {}
 
   @Get('current')
-  getCurrentVersion() {
+  getCurrentVersion(): string {
     return this.versionService.getCurrentVersion();
   }
 
   @Get('app-url')
-  getLastAppUrl() {
-    return this.versionService.getLastAppUrl();
+  getLastAppUrl(@Headers('branch') branch: Branch): string {
+    return this.versionService.getLastAppUrl(branch);
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserWithoutPassword } from 'src/users/entities/user.entity';
+import Branch from 'src/core/enums/branch.enum';
 
 @Injectable()
 export class AuthService {
@@ -10,11 +11,15 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async verify(
-    userNumber: number,
-    password: string,
-  ): Promise<UserWithoutPassword | null> {
-    const user: User = await this.usersService.findOneByUserNumber(userNumber);
+  async verify({
+    userNumber,
+    password,
+    branch,
+  }: IAuthParams): Promise<UserWithoutPassword | null> {
+    const user: User = await this.usersService.findOneByUserNumber(
+      userNumber,
+      branch,
+    );
     if (user && user.password === password) {
       const { password, ...result } = user;
       return result;
@@ -22,11 +27,15 @@ export class AuthService {
     return null;
   }
 
-  async validateUser(
-    userNumber: number,
-    password: string,
-  ): Promise<UserWithoutPassword | null> {
-    const user: User = await this.usersService.findOneByUserNumber(userNumber);
+  async validateUser({
+    userNumber,
+    password,
+    branch,
+  }: IAuthParams): Promise<UserWithoutPassword | null> {
+    const user: User = await this.usersService.findOneByUserNumber(
+      userNumber,
+      branch,
+    );
     if (user && user.password === password) {
       const { password, ...result } = user;
       return result;
@@ -44,4 +53,10 @@ export class AuthService {
 
     return { token };
   }
+}
+
+interface IAuthParams {
+  userNumber: number;
+  password: string;
+  branch: Branch;
 }

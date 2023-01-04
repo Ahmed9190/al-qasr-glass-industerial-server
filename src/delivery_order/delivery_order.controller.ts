@@ -6,6 +6,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Headers,
 } from '@nestjs/common';
 import { Body, Param, Patch, Post } from '@nestjs/common/decorators';
 import { AuthGuard } from '@nestjs/passport';
@@ -15,6 +16,7 @@ import { DeliveryOrderService } from './delivery_order.service';
 import { MarkAsDeliveredDto } from './dto/mark-as-delivered.dto';
 import { SendDataDto } from './dto/send-data.dto';
 import { DeliveryOrder } from './entities/delivery_order.entity';
+import Branch from 'src/core/enums/branch.enum';
 
 @Controller('delivery-order')
 export class DeliveryOrderController {
@@ -23,12 +25,14 @@ export class DeliveryOrderController {
   @UseGuards(AuthGuard('jwt'))
   @Get()
   async findAllPaginated(
+    @Headers('branch') branch: Branch,
     @Paginate() query: PaginateQuery,
     @Req() request: any,
   ): Promise<Paginated<DeliveryOrder>> {
     return this.deliveryOrderService.findAllPaginated(
       query,
       request.user.driverNumber,
+      branch,
     );
   }
 
@@ -36,12 +40,14 @@ export class DeliveryOrderController {
   @HttpCode(HttpStatus.ACCEPTED)
   @Patch('mark-as-seen/:deliveryOrderNumber')
   public markAsSeen(
+    @Headers('branch') branch: Branch,
     @Param('deliveryOrderNumber', ParseIntPipe) deliveryOrderNumber: number,
     @Req() request: any,
   ): Promise<DeliveryOrder> {
     return this.deliveryOrderService.markAsSeen(
       deliveryOrderNumber,
       request.user.driverNumber,
+      branch,
     );
   }
 
@@ -49,6 +55,7 @@ export class DeliveryOrderController {
   @Patch('mark-as-delivered/:deliveryOrderNumber')
   @HttpCode(HttpStatus.ACCEPTED)
   async markAsDelivered(
+    @Headers('branch') branch: Branch,
     @Param('deliveryOrderNumber', ParseIntPipe) deliveryOrderNumber: number,
     @Req() request: any,
     @Body() markAsDeliveredDto: MarkAsDeliveredDto,
@@ -57,16 +64,26 @@ export class DeliveryOrderController {
       deliveryOrderNumber,
       markAsDeliveredDto,
       request.user.driverNumber,
+      branch,
     );
   }
 
   @Post('notify-driver')
-  public notifyDriver(@Body() sendDataDto: SendDataDto) {
-    return this.deliveryOrderService.notifyDriver(sendDataDto);
+  public notifyDriver(
+    @Body() sendDataDto: SendDataDto,
+    @Headers('branch') branch: Branch,
+  ) {
+    return this.deliveryOrderService.notifyDriver(sendDataDto, branch);
   }
 
   @Post('send-verification-code-sms')
-  async sendVerificationCodeSms(@Body() sendDataDto: SendDataDto) {
-    return await this.deliveryOrderService.sendVerificationCodeSms(sendDataDto);
+  async sendVerificationCodeSms(
+    @Body() sendDataDto: SendDataDto,
+    @Headers('branch') branch: Branch,
+  ) {
+    return await this.deliveryOrderService.sendVerificationCodeSms(
+      sendDataDto,
+      branch,
+    );
   }
 }

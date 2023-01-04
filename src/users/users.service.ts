@@ -1,17 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import Branch from 'src/core/enums/branch.enum';
+
+import { InjectRepository } from '@nestjs/typeorm';
+import IRepositories from 'src/core/types/i-respositories.type';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
-  ) {}
+  private _branchRepostiories: IRepositories<User>;
 
-  async findOneByUserNumber(userNumber: number): Promise<User | undefined> {
+  constructor(
+    @InjectRepository(User, Branch.jeddah)
+    private readonly jeddahUserRepository: Repository<User>,
+    @InjectRepository(User, Branch.riyadh)
+    private readonly riyadhUserRepository: Repository<User>,
+  ) {
+    this._branchRepostiories = {
+      jeddah: this.jeddahUserRepository,
+      riyadh: this.riyadhUserRepository,
+    };
+  }
+
+  async findOneByUserNumber(
+    userNumber: number,
+    branchName: Branch,
+  ): Promise<User | undefined> {
     if (!isNaN(userNumber))
-      return await this.usersRepository.findOneBy({ userNumber });
+      return await this._branchRepostiories[branchName].findOneBy({
+        userNumber,
+      });
   }
 }

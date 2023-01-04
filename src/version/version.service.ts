@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import Branch from 'src/core/enums/branch.enum';
 
 @Injectable()
 export class VersionService {
-  getCurrentVersion() {
+  getCurrentVersion(): string {
     return process.env.CURRENT_VERSION;
   }
-  getLastAppUrl() {
-    return process.env.APP_URL;
+  getLastAppUrl(branch: Branch): string {
+    return process.env[`${branch.toUpperCase()}_APK`];
   }
 }
