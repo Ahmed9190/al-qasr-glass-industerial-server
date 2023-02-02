@@ -11,6 +11,7 @@ import Branch from 'src/core/enums/branch.enum';
   imports: [
     TypeOrmModule.forFeature([DeliveryOrder], Branch.jeddah),
     TypeOrmModule.forFeature([DeliveryOrder], Branch.riyadh),
+    TypeOrmModule.forFeature([DeliveryOrder], Branch.alqassim),
     SmsModule,
   ],
   controllers: [DeliveryOrderController],

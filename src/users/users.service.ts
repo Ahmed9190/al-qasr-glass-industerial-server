@@ -15,19 +15,22 @@ export class UsersService {
     private readonly jeddahUserRepository: Repository<User>,
     @InjectRepository(User, Branch.riyadh)
     private readonly riyadhUserRepository: Repository<User>,
+    @InjectRepository(User, Branch.alqassim)
+    private readonly alqassimUserRepository: Repository<User>,
   ) {
     this._branchRepostiories = {
       jeddah: this.jeddahUserRepository,
       riyadh: this.riyadhUserRepository,
+      alqassim: this.alqassimUserRepository,
     };
   }
 
   async findOneByUserNumber(
     userNumber: number,
-    branchName: Branch,
+    branch: Branch,
   ): Promise<User | undefined> {
     if (!isNaN(userNumber))
-      return await this._branchRepostiories[branchName].findOneBy({
+      return await this._branchRepostiories[branch].findOneBy({
         userNumber,
       });
   }

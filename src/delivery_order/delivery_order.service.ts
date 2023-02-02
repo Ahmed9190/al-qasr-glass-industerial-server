@@ -25,6 +25,7 @@ export class DeliveryOrderService {
   private _branchRepostiories: IRepositories<DeliveryOrder> = {
     jeddah: this.jeddahDeliveryOrderRepository,
     riyadh: this.riyadhDeliveryOrderRepository,
+    alqassim: this.alqassimDeliveryOrderRepository,
   };
 
   constructor(
@@ -32,6 +33,8 @@ export class DeliveryOrderService {
     private readonly jeddahDeliveryOrderRepository: Repository<DeliveryOrder>,
     @InjectRepository(DeliveryOrder, Branch.riyadh)
     private readonly riyadhDeliveryOrderRepository: Repository<DeliveryOrder>,
+    @InjectRepository(DeliveryOrder, Branch.alqassim)
+    private readonly alqassimDeliveryOrderRepository: Repository<DeliveryOrder>,
     private readonly deliveryOrderGateway: DeliveryOrderGateway,
     private readonly smsService: SmsService,
   ) {}
@@ -39,9 +42,9 @@ export class DeliveryOrderService {
   findAllPaginated(
     query: PaginateQuery,
     driverNumber: number,
-    branchName: Branches,
+    branch: Branches,
   ): Promise<Paginated<DeliveryOrder>> {
-    return paginate(query, this._branchRepostiories[branchName], {
+    return paginate(query, this._branchRepostiories[branch], {
       where: {
         driverNumber,
         status: In([
@@ -63,18 +66,16 @@ export class DeliveryOrderService {
   async markAsSeen(
     deliveryOrderNumber: number,
     driverNumber: number,
-    branchName: Branches,
+    branch: Branches,
   ): Promise<DeliveryOrder> {
-    const deliveryOrder = await this._branchRepostiories[branchName].findOneBy({
+    const deliveryOrder = await this._branchRepostiories[branch].findOneBy({
       number: deliveryOrderNumber,
       driverNumber,
     });
 
     if (!deliveryOrder) throw new BadRequestException();
 
-    const updatedDeliveryOrder = await this._branchRepostiories[
-      branchName
-    ].save({
+    const updatedDeliveryOrder = await this._branchRepostiories[branch].save({
       ...deliveryOrder,
       seen: true,
     });
@@ -85,9 +86,9 @@ export class DeliveryOrderService {
     deliveryOrderNumber: number,
     markAsDeliveredDto: MarkAsDeliveredDto,
     driverNumber: number,
-    branchName: Branches,
+    branch: Branches,
   ): Promise<DeliveryOrder> {
-    const deliveryOrder = await this._branchRepostiories[branchName].findOneBy({
+    const deliveryOrder = await this._branchRepostiories[branch].findOneBy({
       driverNumber,
       number: deliveryOrderNumber,
       verificationCode: markAsDeliveredDto.verificationCode,
@@ -95,34 +96,31 @@ export class DeliveryOrderService {
 
     if (!deliveryOrder || !deliveryOrder) throw new NotAcceptableException();
 
-    const updatedDeliveryOrder = this._branchRepostiories[branchName].create({
+    const updatedDeliveryOrder = this._branchRepostiories[branch].create({
       ...deliveryOrder,
       delivered: true,
       deliveredAt: new Date(),
     });
-    await this._branchRepostiories[branchName].save(updatedDeliveryOrder);
+    await this._branchRepostiories[branch].save(updatedDeliveryOrder);
 
     return updatedDeliveryOrder;
   }
 
-  async notifyDriver(sendDataDto: SendDataDto, branchName: Branches) {
+  async notifyDriver(sendDataDto: SendDataDto, branch: Branches) {
     const { deliveryOrderNumber } = sendDataDto;
 
-    const deliveryOrder = await this._branchRepostiories[branchName].findOneBy({
+    const deliveryOrder = await this._branchRepostiories[branch].findOneBy({
       number: deliveryOrderNumber,
     });
 
     await this._updateMobileNumber(
       deliveryOrder.number,
       sendDataDto.mobileNumber,
-      branchName,
+      branch,
     );
 
     if (deliveryOrder) {
-      const isSent = await this.sendVerificationCodeSms(
-        sendDataDto,
-        branchName,
-      );
+      const isSent = await this.sendVerificationCodeSms(sendDataDto, branch);
 
       this.deliveryOrderGateway.driversNotifier.notifyObserver(
         deliveryOrder.driverNumber,
@@ -135,20 +133,20 @@ export class DeliveryOrderService {
 
   async sendVerificationCodeSms(
     sendDataDto: SendDataDto,
-    branchName: Branches,
+    branch: Branches,
   ): Promise<boolean> {
     const { mobileNumber, deliveryOrderNumber } = sendDataDto;
 
     await this._updateMobileNumber(
       deliveryOrderNumber,
       sendDataDto.mobileNumber,
-      branchName,
+      branch,
     );
 
     const verificationCode: number =
       await this.findVerificationCodeByDeliveryOrderNumber(
         deliveryOrderNumber,
-        branchName,
+        branch,
       );
 
     if (regEx.saudiaArabiaMobile.test(mobileNumber)) {
@@ -163,18 +161,18 @@ export class DeliveryOrderService {
   private async _updateMobileNumber(
     deliveryOrderNumber: number,
     mobileNumber: string,
-    branchName: Branches,
+    branch: Branches,
   ): Promise<void> {
-    await this._branchRepostiories[branchName].update(deliveryOrderNumber, {
+    await this._branchRepostiories[branch].update(deliveryOrderNumber, {
       customer: { mobileNumber },
     });
   }
 
   async findVerificationCodeByDeliveryOrderNumber(
     deliveryOrderNumber: number,
-    branchName: Branches,
+    branch: Branches,
   ): Promise<number> {
-    const deliveryOrder = await this._branchRepostiories[branchName]
+    const deliveryOrder = await this._branchRepostiories[branch]
       .createQueryBuilder('deliveryOrder')
       .where({ number: deliveryOrderNumber })
       .addSelect('verificationCode')

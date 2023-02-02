@@ -8,6 +8,7 @@ import Branch from 'src/core/enums/branch.enum';
   imports: [
     TypeOrmModule.forFeature([User], Branch.jeddah),
     TypeOrmModule.forFeature([User], Branch.riyadh),
+    TypeOrmModule.forFeature([User], Branch.alqassim),
   ],
   providers: [UsersService],
   exports: [UsersService],

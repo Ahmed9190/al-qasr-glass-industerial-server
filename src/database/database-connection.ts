@@ -47,4 +47,19 @@ export const getDatabaseProviders = () => [
       encrypt: false,
     },
   }),
+  TypeOrmModule.forRoot({
+    name: Branch.alqassim,
+    type: 'mssql',
+    host: process.env.DATABASE_HOST,
+    port: 1433,
+    username: process.env.ALQASSIM_DATABASE_USERNAME,
+    password: process.env.ALQASSIM_DATABASE_PASSWORD,
+    database: process.env.ALQASSIM_DATABASE_NAME,
+    // entities: [DeliveryOrderDetails],
+    entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+    synchronize: false,
+    options: {
+      encrypt: false,
+    },
+  }),
 ];
