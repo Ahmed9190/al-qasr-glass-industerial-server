@@ -5,7 +5,7 @@ export const smsApiUrl = 'http://REST.GATEWAY.SA/api/SendSMS';
 export const buildSmsApiQueryParameters = (
   data: SMSData,
 ): SmsApiParameters => ({
-  templateid: 456,
+  templateid: +process.env.VERIFICATION_SMS_TEMPLATE_ID,
   api_id: process.env.SMS_API_ID,
   api_password: process.env.SMS_API_PASSWORD,
   sms_type: 'T',
