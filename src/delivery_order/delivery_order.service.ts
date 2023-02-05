@@ -149,10 +149,14 @@ export class DeliveryOrderService {
         branch,
       );
 
-    if (regEx.saudiaArabiaMobile.test(mobileNumber)) {
+    if (
+      regEx.saudiaArabiaMobile.test(mobileNumber) &&
+      !isNaN(deliveryOrderNumber) &&
+      !isNaN(verificationCode)
+    ) {
       return await this.smsService.send({
-        message: `أمر التسليم رقم ${deliveryOrderNumber}
-رقم التحقق الخاص به هو ${verificationCode}`,
+        deliveryOrderNumber: deliveryOrderNumber,
+        verificationCode: verificationCode,
         mobile: mobileNumber,
       });
     }

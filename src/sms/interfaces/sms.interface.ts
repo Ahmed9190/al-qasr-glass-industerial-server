@@ -1,5 +1,6 @@
 export interface SMSData {
   mobile: string;
-  message: string;
   sender_id?: string;
+  deliveryOrderNumber: number;
+  verificationCode: number;
 }
